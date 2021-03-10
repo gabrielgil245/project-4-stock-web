@@ -1,24 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import Search from "./search";
+import Portfolio from "./portfolio";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className={'w-full p-5 bg-blue-500'}>
+        <h1 className={'text-2xl font-bold text-center text-white tracking-wider uppercase'}>
+          Paper Trader
+        </h1>
+      </div>
+
+      <div className="grid grid-cols-12">
+        <div className="col-span-8">
+          <Search />
+        </div>
+        <div className="col-span-4">
+          <Portfolio />
+        </div>
+      </div>
+  </>
   );
 }
 
