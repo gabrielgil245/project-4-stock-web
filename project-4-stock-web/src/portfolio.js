@@ -1,20 +1,4 @@
-import React, {useState, useEffect} from 'react';
-
 function Portfolio(props) {
-
-    const[currentCash, setCurrentCash] = useState();
-
-    const fetchCash = async () => {
-        const res = await fetch(`http://localhost:3000/api/v1/cash`);
-        let json = await res.json();
-        console.log(json);
-        setCurrentCash(json);
-    }
-
-    useEffect(() => {
-        console.log("Loads once at the start of the application");
-        fetchCash();
-    }, [])
 
     return (
         <div className={'border p-5'}>
@@ -38,8 +22,8 @@ function Portfolio(props) {
             <br/>
             <br/>
 
-            {currentCash && <h1 className={'text-xl font-bold'}>
-                Current Cash Value: ${currentCash.value}
+            {props.currentCash && <h1 className={'text-xl font-bold'}>
+                Current Cash Value: ${props.currentCash.value}
             </h1>}
         </div>
     );
