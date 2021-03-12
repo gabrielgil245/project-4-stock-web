@@ -27,13 +27,18 @@ function Search(props) {
         setInputText(event.currentTarget.value);
     };
 
-    const onBuyChange = async (event) => {
-        console.log(event.currentTarget.value)
-        setBuyQuantity(event.currentTarget.value);
+    const buyStock = async () => {
         if(buyQuantity <= 0){
             alert("Buy quantity must be greater than 0");
+        }else{
+            console.log("Buying the stock");
         }
-        
+    }
+
+    const onBuyChange = async (event) => {
+        // console.log(event.currentTarget.value);
+        setBuyQuantity(event.currentTarget.value);
+                
         let cashNeeded = buyQuantity * quote.data.price;
         console.log('cashNeed is', cashNeeded)
 
@@ -49,11 +54,6 @@ function Search(props) {
         // }
     };
 
-    const buyStock = async () => {
-        //stock symbol
-        //stock quote
-    }
-
     return (
         <div className={'border p-2'}>
 
@@ -68,9 +68,9 @@ function Search(props) {
 
             {ticker && <div className="grid grid-cols-12">
                 <div className={'border p-5 col-span-4'}>
-                    {ticker && <h1 className={'text-lg'}>
+                    <h1 className={'text-lg'}>
                         {ticker} : {quote && <span>{quote.data.currency} {quote.data.price}</span>}
-                    </h1>}
+                    </h1>
                 </div>
                 <div className={'border p-5 col-span-8'}>
                     <input type="number" onChange={onBuyChange} className={"border"} value={buyQuantity} />

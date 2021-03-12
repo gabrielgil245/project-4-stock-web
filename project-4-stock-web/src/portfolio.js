@@ -8,15 +8,16 @@ function Portfolio(props) {
         const res = await fetch(`http://localhost:3000/api/v1/cash`);
         let json = await res.json();
         console.log(json);
+        setCurrentCash(json);
     }
 
     useEffect(() => {
+        console.log("Loads once at the start of the application");
         fetchCash();
     }, [])
 
     return (
         <div className={'border p-5'}>
-
             <h1 className={'text-xl font-bold'}>Portfolio</h1>
             <table style={{width: '100%'}}>
                 <thead>
@@ -26,7 +27,7 @@ function Portfolio(props) {
                 </thead>
                 <tbody>
                     <tr className={'border'}>
-                        <td className={'border text-center'}>AAPL</td>
+                        <td className={'border text-center'}>Placeholder Stock</td>
                         <td className={'border text-center'}>200</td>
                         <td className={'border text-center'}>127</td>
                     </tr>
@@ -38,7 +39,7 @@ function Portfolio(props) {
             <br/>
 
             {currentCash && <h1 className={'text-xl font-bold'}>
-                Current Wallet Value: ${currentCash.value}
+                Current Cash Value: ${currentCash.value}
             </h1>}
         </div>
     );
