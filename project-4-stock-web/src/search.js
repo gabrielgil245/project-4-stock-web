@@ -7,11 +7,9 @@ function Search(props) {
     const [ticker, setTicker] = useState();
     const [buyQuantity, setBuyQuantity] = useState(0);
 
-
     useEffect(() => {
-
+        
     })
-
 
     const fetchQuote = async () => {
         const res = await fetch(`http://localhost:3000/api/v1/portfolio/search/${inputText}`);
@@ -28,30 +26,41 @@ function Search(props) {
     };
 
     const buyStock = async () => {
+        
         if(buyQuantity <= 0){
             alert("Buy quantity must be greater than 0");
+        }
+
+        let cashNeeded = buyQuantity * quote.data.price;
+        console.log('cashNeeded is', cashNeeded)
+        if(cashNeeded > props.currentCash.value){
+            alert("Not enough cash!");
         }else{
-            console.log("Buying the stock");
+            let stockBody = {
+                symbol: ticker,
+                quantity:buyQuantity,
+                price: quote.data.price
+            }
+
+            let options = {
+                method: 'POST', 
+                body: JSON.stringify(stockBody),
+                headers: {}
+            };
+            options.headers["Accept"] = "application/json, text/plain, */*";
+            options.headers["Content-Type"] = "application/json;charset=utf-8";
+            console.log(options);
+
+            const res = await fetch(`http://localhost:3000/api/v1/portfolio`, options);
+            let json = await res.json();
+            console.log(json);
+            setBuyQuantity(0);
         }
     }
 
     const onBuyChange = async (event) => {
         // console.log(event.currentTarget.value);
         setBuyQuantity(event.currentTarget.value);
-                
-        let cashNeeded = buyQuantity * quote.data.price;
-        console.log('cashNeed is', cashNeeded)
-
-        // if(cashNeeded > currentWallet.value){
-        //     alert("Not enough cash");
-        // } else{
-        //     let body = {
-        //         symbol: ticker,
-        //         quantity:buyQuantity,
-        //         price: quote.data.price
-        //     }
-
-        // }
     };
 
     return (
