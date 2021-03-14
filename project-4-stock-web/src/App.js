@@ -46,7 +46,8 @@ function App() {
           <Portfolio currentCash={currentCash}
             setCurrentCash={setCurrentCash}
             currentPortfolio={currentPortfolio}
-            setCurrentPortfolio={setCurrentPortfolio}/>
+            setCurrentPortfolio={setCurrentPortfolio}
+            fetchPortfolio={fetchPortfolio}/>
         </div>
       </div>
   </>
