@@ -1,30 +1,69 @@
+import React, {useState, useEffect} from 'react';
+
 function Portfolio(props) {
+
+    const [selectedStock,setSelectedStock] = useState();
+    const [currentStock,setCurrentStock] = useState([]);    
+    
+    const selectedStockChange = async (event) => {
+        // console.log(event.currentTarget.value);
+        setSelectedStock(event.currentTarget.value);
+                        
+        const res = await fetch(`http://localhost:3000/api/v1/portfolio/${event.currentTarget.value}`);
+        let json = await res.json();
+        // console.log(json);
+        setCurrentStock(json);
+    };
+
+    useEffect (() => {
+        
+    })
 
     return (
         <div className={'border p-5'}>
             <h1 className={'text-xl font-bold'}>Portfolio</h1>
-            <table style={{width: '100%'}}>
+            {props.currentPortfolio && <table style={{width: '100%'}}>
                 <thead>
                     <th className={'border'}>Stock</th>
                     <th className={'border'}>Quantity</th>
                     <th className={'border'}>Value</th>
+                    <th className={'border'}>Buy/Sell</th>
                 </thead>
                 <tbody>
-                    <tr className={'border'}>
-                        <td className={'border text-center'}>Placeholder Stock</td>
-                        <td className={'border text-center'}>200</td>
-                        <td className={'border text-center'}>127</td>
-                    </tr>
+                    {props.currentPortfolio.map((item, index) => {
+                        return <tr key={index} className={'border'}>
+                            <td className={'border text-center'}>{item.symbol}</td>
+                            <td className={'border text-center'}>{item.quantity}</td>
+                            <td className={'border text-center'}>{item.price}</td>
+                            <input type="radio" 
+                            className={'w-full'} 
+                            checked={selectedStock === item.symbol}
+                            value={item.symbol}
+                            onChange = {selectedStockChange}></input>
+                        </tr>
+                    })}
+                    
                 </tbody>
-            </table>
+            </table>}
 
+            {!props.currentPortfolio && <h1 className={'text-lg font-bold'}>Loading...</h1>}
             <br/>
-            <br/>
-            <br/>
-
-            {props.currentCash && <h1 className={'text-xl font-bold'}>
-                Current Cash Value: ${props.currentCash.value}
-            </h1>}
+            
+            <div className={"grid grid-cols-12 gap-4"}>
+                {currentStock.map((item) => {
+                    return <div className={"col-start-3 col-span-12"}>{item.symbol}: you have {item.quantity} at {item.price} per share.</div>
+                })}
+                {/* onChange=onBuyChange, value=buyQuantity */}
+                <input type="number" className={"border col-start-3 col-span-8"} />
+                {/* onClick=buyStock */}
+                {selectedStock ? <span className={'bg-blue-600 cursor-pointer col-start-3 col-span-4 py-2 rounded text-white text-xl text-center'}>Buy</span> : <div></div>}
+                {/* onClick=sellStock */}
+                {selectedStock ? <span className={'bg-red-600 cursor-pointer col-start-7 col-span-4 py-2 rounded text-white text-xl text-center'}>Sell</span> : <div></div>}
+            
+                {props.currentCash && <h1 className={'text-xl font-bold col-start-3 col-span-12'}>
+                    Current Cash Value: ${props.currentCash.value}
+                </h1>}
+            </div>
         </div>
     );
 }
