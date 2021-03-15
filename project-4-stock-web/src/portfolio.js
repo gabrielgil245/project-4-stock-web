@@ -4,40 +4,73 @@ function Portfolio(props) {
 
     const [selectedStock,setSelectedStock] = useState();
     const [currentStock,setCurrentStock] = useState([]);
-    const [newQuantity, setNewQuantity] = useState(0)
+    const [newQuantity, setNewQuantity] = useState(0);
+    const [newQuote, setNewQuote] = useState();
     
     useEffect (() => {
         
-    })
+    })  
 
     const selectedStockChange = async (event) => {
-        // console.log(event.currentTarget.value);
+        console.log(event.currentTarget.value);
         setSelectedStock(event.currentTarget.value);
                         
         const res = await fetch(`http://localhost:3000/api/v1/portfolio/${event.currentTarget.value}`);
         let json = await res.json();
-        // console.log(json);
-        setCurrentStock(json);
+        console.log(json);
+        setCurrentStock(json);   
     };
-    
+
+    const fetchQuote = async () => {
+        let stock = currentStock[0];
+        console.log(stock);
+        let symbol = stock.symbol;
+        console.log(symbol);
+        const res = await fetch(`http://localhost:3000/api/v1/portfolio/search/${symbol}`);
+        let json = await res.json();
+        console.log(json);
+        setNewQuote(json);
+    };    
+
     const onQuantityChange = async (event) => {
         // console.log(event.currentTarget.value);
         setNewQuantity(event.currentTarget.value);
     }
 
-    const increaseStock = async () => {
+    const decreaseCash = async () => {
+        let cashId = 1;
+        let stockValue = newQuote.data.price;
+        let newCash = props.currentCash.value - (stockValue * newQuantity);
+        parseInt(newCash);
+        
+        let cashBody = {
+        value: newCash
+        }
+
+        let options = {
+        method: 'PUT', 
+        body: JSON.stringify(cashBody),
+        headers: {}
+        };
+        options.headers["Accept"] = "application/json, text/plain, */*";
+        options.headers["Content-Type"] = "application/json;charset=utf-8";
+        console.log(options);
+
+        const res = await fetch(`http://localhost:3000/api/v1/cash/${cashId}`, options);
+        console.log(newCash);
+        props.setCurrentCash(newCash);
+        props.fetchCash();
+    }
+
+    const purchaseStock = async () => {
         
         let stockBody = currentStock[0];
+        console.log(currentStock);
         let stockId = JSON.stringify(stockBody.id);
         let stockSymbol = stockBody.symbol;
         let stockQuantity = parseInt(stockBody.quantity) + parseInt(newQuantity);
         let stockValue = stockBody.price;
         
-        // console.log(stockBody);
-        // console.log(stockId);
-        // console.log(stockSymbol);
-        // console.log(stockQuantity);
-        // console.log(stockValue);
         let responseBody = {
             symbol: stockSymbol,
             quantity: stockQuantity,
@@ -55,14 +88,42 @@ function Portfolio(props) {
 
         const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
         let json = await res.json();
-        console.log(json);
+        // console.log(json);
         setNewQuantity(0);
+        decreaseCash();
+        props.fetchCash();
         props.fetchPortfolio();
         alert("Success!");
         setSelectedStock(null);
     }
 
-    const decreaseStock = async () => {
+    const increaseCash = async () => {
+        let cashId = 1;
+        let stockValue = newQuote.data.price;
+        let parsedCurrentCash = parseInt(props.currentCash.value);
+        let parsedStockValue = parseInt(stockValue);
+        let newCash = parsedCurrentCash + (parsedStockValue * newQuantity);
+        
+        let cashBody = {
+        value: newCash
+        }
+
+        let options = {
+        method: 'PUT', 
+        body: JSON.stringify(cashBody),
+        headers: {}
+        };
+        options.headers["Accept"] = "application/json, text/plain, */*";
+        options.headers["Content-Type"] = "application/json;charset=utf-8";
+        console.log(options);
+
+        const res = await fetch(`http://localhost:3000/api/v1/cash/${cashId}`, options);
+        console.log(newCash);
+        props.setCurrentCash(newCash);
+        props.fetchCash();
+    }
+
+    const sellStock = async () => {
         
         let stockBody = currentStock[0];
         let stockId = JSON.stringify(stockBody.id);
@@ -87,12 +148,13 @@ function Portfolio(props) {
 
         const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
         let json = await res.json();
-        console.log(json);
+        // console.log(json);
         setNewQuantity(0);
+        increaseCash();
+        props.fetchCash();
         props.fetchPortfolio();
         alert("Success!");
         setSelectedStock(null);
-
     }
 
     return (
@@ -102,7 +164,7 @@ function Portfolio(props) {
                 <thead>
                     <th className={'border'}>Stock</th>
                     <th className={'border'}>Quantity</th>
-                    <th className={'border'}>Value</th>
+                    <th className={'border'}>Intial Value</th>
                     <th className={'border'}>Buy/Sell</th>
                 </thead>
                 <tbody>
@@ -113,8 +175,8 @@ function Portfolio(props) {
                             <td className={'border text-center'}>{item.price}</td>
                             <input type="radio" 
                             className={'w-full'} 
-                            checked={selectedStock === item.symbol}
-                            value={item.symbol}
+                            checked={selectedStock == item.id}
+                            value={item.id}
                             onChange = {selectedStockChange}></input>
                         </tr>
                     })}
@@ -123,15 +185,13 @@ function Portfolio(props) {
             </table>}
 
             {!props.currentPortfolio && <h1 className={'text-lg font-bold'}>Loading...</h1>}
-            <br/>
-            
-            {selectedStock ? <div className={"grid grid-cols-12 gap-4"}>
+            {selectedStock ? <div className={"p-4 grid grid-cols-12 gap-4"}>
                 {currentStock.map((item, index) => {
-                return <div key={index} className={"col-start-3 col-span-12"}>{item.id} : {item.symbol}: you have {item.quantity} at {item.price} per share.</div>
-            })}
-                <input type="number" onChange={onQuantityChange} className={"border col-start-5 col-span-6"} value={newQuantity} />
-                <span onClick={increaseStock} className={'bg-blue-600 cursor-pointer col-start-3 col-span-5 py-2 rounded text-white text-xl text-center'}>Buy</span>
-                <span onClick={decreaseStock} className={'bg-red-600 cursor-pointer col-start-8 col-span-5 py-2 rounded text-white text-xl text-center'}>Sell</span>
+                return <div key={index} className={"col-start-3 col-span-12"}>{item.symbol}: you have {item.quantity} at {item.price} per share.</div>
+                })}
+                <input type="number" onClick={fetchQuote} onChange={onQuantityChange} className={"border col-start-5 col-span-6"} value={newQuantity} />
+                <span onClick={purchaseStock} className={'bg-blue-600 cursor-pointer col-start-3 col-span-5 py-2 rounded text-white text-xl text-center'}>Buy</span>
+                <span onClick={sellStock} className={'bg-red-600 cursor-pointer col-start-8 col-span-5 py-2 rounded text-white text-xl text-center'}>Sell</span>
             </div> : <div></div>}
                 
             <div className={"grid grid-cols-12 gap-4"}>
