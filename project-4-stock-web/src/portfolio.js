@@ -32,10 +32,6 @@ function Portfolio(props) {
         setNewQuote(json);
     };    
 
-    // if(currentStock[0]) {
-    //     fetchQuote();
-    // }
-
     const onQuantityChange = async (event) => {
         // console.log(event.currentTarget.value);
         setNewQuantity(event.currentTarget.value);
@@ -77,7 +73,11 @@ function Portfolio(props) {
         
         let newStockValue = parseInt(newQuote.data.price);
         let cashNeeded = newQuantity * newStockValue;
-        if(cashNeeded > props.currentCash.value){
+        
+        if(newQuantity === 0){
+            alert("Please input the number of shares you wish to buy!")
+        }
+        else if(cashNeeded > props.currentCash.value){
             alert("Not enough cash!");
         }else{
             let responseBody = {
@@ -143,7 +143,11 @@ function Portfolio(props) {
         let stockValue = stockBody.price;
         
         let currentQuantity = parseInt(stockBody.quantity);
-        if(newQuantity > currentQuantity){
+        
+        if(newQuantity === 0){
+            alert("Please input the number of shares you wish to buy!")
+        }
+        else if(newQuantity > currentQuantity){
             alert("Not enough stocks!");
         }else{
             let responseBody = {
