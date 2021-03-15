@@ -12,16 +12,53 @@ function App() {
   
   const fetchCash = async () => {
     const res = await fetch(`http://localhost:3000/api/v1/cash`);
-    let json = await res.json();
-    // console.log(json)
+    let cash = await res.json();
+
+    if(cash.value <= 0){
+      let cashBody = {
+        value: 100000
+      }
+
+      let options = {
+      method: 'PUT', 
+      body: JSON.stringify(cashBody),
+      headers: {}
+      };
+      options.headers["Accept"] = "application/json, text/plain, */*";
+      options.headers["Content-Type"] = "application/json;charset=utf-8";
+      // console.log(options);
+
+      const response = await fetch(`http://localhost:3000/api/v1/cash/${cash.id}`, options);
+    }        
+    const retrieve = await fetch(`http://localhost:3000/api/v1/cash`);
+    let json = await retrieve.json();
+    console.log(json)
     setCurrentCash(json);
   }
   
-  const fetchPortfolio = async () => {
+  const fetchPortfolio = async (stockId, currentQuantity) => {
     const res = await fetch(`http://localhost:3000/api/v1/portfolio`);
-    let json = await res.json();
-    // console.log(json);
+    let ids = await res.json();
+    for (let item of ids) {
+      // console.log(item.quantity);
+      if(item.quantity <= 0){
+        
+      let options = {
+          method: 'DELETE', 
+          headers: {}
+      };
+      options.headers["Accept"] = "application/json, text/plain, */*";
+      options.headers["Content-Type"] = "application/json;charset=utf-8";
+      console.log(options);
+      
+      const response = await fetch(`http://localhost:3000/api/v1/portfolio/${item.id}`, options)
+      }
+    }
+    const retrieve = await fetch(`http://localhost:3000/api/v1/portfolio`);
+    let json = await retrieve.json();
+    console.log(json);
     setCurrentPortfolio(json);
+    
   }
 
   const refreshCash = async () => {
