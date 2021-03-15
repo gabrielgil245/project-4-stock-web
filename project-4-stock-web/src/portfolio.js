@@ -32,6 +32,10 @@ function Portfolio(props) {
         setNewQuote(json);
     };    
 
+    // if(currentStock[0]) {
+    //     fetchQuote();
+    // }
+
     const onQuantityChange = async (event) => {
         // console.log(event.currentTarget.value);
         setNewQuantity(event.currentTarget.value);
@@ -71,30 +75,37 @@ function Portfolio(props) {
         let stockQuantity = parseInt(stockBody.quantity) + parseInt(newQuantity);
         let stockValue = stockBody.price;
         
-        let responseBody = {
-            symbol: stockSymbol,
-            quantity: stockQuantity,
-            price: stockValue
+        let newStockValue = parseInt(newQuote.data.price);
+        let cashNeeded = newQuantity * newStockValue;
+        if(cashNeeded > props.currentCash.value){
+            alert("Not enough cash!");
+        }else{
+            let responseBody = {
+                symbol: stockSymbol,
+                quantity: stockQuantity,
+                price: stockValue
+            }
+    
+            let options = {
+                method: 'PUT', 
+                body: JSON.stringify(responseBody),
+                headers: {}
+            };
+            options.headers["Accept"] = "application/json, text/plain, */*";
+            options.headers["Content-Type"] = "application/json;charset=utf-8";
+            console.log(options);
+    
+            const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
+            let json = await res.json();
+            // console.log(json);
+            setNewQuantity(0);
+            decreaseCash();
+            props.fetchCash();
+            props.fetchPortfolio();
+            alert("Success!");
+            setSelectedStock(null);
         }
-
-        let options = {
-            method: 'PUT', 
-            body: JSON.stringify(responseBody),
-            headers: {}
-        };
-        options.headers["Accept"] = "application/json, text/plain, */*";
-        options.headers["Content-Type"] = "application/json;charset=utf-8";
-        console.log(options);
-
-        const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
-        let json = await res.json();
-        // console.log(json);
-        setNewQuantity(0);
-        decreaseCash();
-        props.fetchCash();
-        props.fetchPortfolio();
-        alert("Success!");
-        setSelectedStock(null);
+        
     }
 
     const increaseCash = async () => {
@@ -131,30 +142,36 @@ function Portfolio(props) {
         let stockQuantity = parseInt(stockBody.quantity) - parseInt(newQuantity);
         let stockValue = stockBody.price;
         
-        let responseBody = {
-            symbol: stockSymbol,
-            quantity: stockQuantity,
-            price: stockValue
+        let currentQuantity = parseInt(stockBody.quantity);
+        if(newQuantity > currentQuantity){
+            alert("Not enough stocks!");
+        }else{
+            let responseBody = {
+                symbol: stockSymbol,
+                quantity: stockQuantity,
+                price: stockValue
+            }
+    
+            let options = {
+                method: 'PUT', 
+                body: JSON.stringify(responseBody),
+                headers: {}
+            };
+            options.headers["Accept"] = "application/json, text/plain, */*";
+            options.headers["Content-Type"] = "application/json;charset=utf-8";
+            console.log(options);
+    
+            const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
+            let json = await res.json();
+            // console.log(json);
+            setNewQuantity(0);
+            increaseCash();
+            props.fetchCash();
+            props.fetchPortfolio();
+            alert("Success!");
+            setSelectedStock(null);
         }
 
-        let options = {
-            method: 'PUT', 
-            body: JSON.stringify(responseBody),
-            headers: {}
-        };
-        options.headers["Accept"] = "application/json, text/plain, */*";
-        options.headers["Content-Type"] = "application/json;charset=utf-8";
-        console.log(options);
-
-        const res = await fetch(`http://localhost:3000/api/v1/portfolio/${stockId}`, options);
-        let json = await res.json();
-        // console.log(json);
-        setNewQuantity(0);
-        increaseCash();
-        props.fetchCash();
-        props.fetchPortfolio();
-        alert("Success!");
-        setSelectedStock(null);
     }
 
     return (
