@@ -70,22 +70,22 @@ function Search(props) {
     return (
         <div className={'border p-2'}>
 
-            <div className="grid grid-cols-12">
-                <div className={'p-5 col-span-9'}>
+            <div className="grid grid-cols-12 gap-4 md:gap-0">
+                <div className={'p-2 col-span-6 md:col-span-8'}>
                     <input value={inputText} onChange={onInputChange} type="text" className={'border w-full rounded border-gray-300 p-2'}/>
                 </div>
-                <div className={'col-span-3 flex items-stretch'}>
-                    <span onClick={fetchQuote} className={'self-center align-center bg-green-600 cursor-pointer rounded text-white text-xl p-2'}>Get Quote</span>
+                <div className={'p-2 col-span-6 md:col-span-4 flex items-stretch'}>
+                    <span onClick={fetchQuote} className={'bg-green-600 cursor-pointer rounded text-white text-xl md:text-lg p-2'}>Get Quote</span>
                 </div>
             </div>
 
             {ticker && <div className="grid grid-cols-12">
-                <div className={'border p-5 col-span-5'}>
+                <div className={'border p-5 col-span-12 md:col-span-5'}>
                     <h1 className={'text-lg'}>
                         {ticker} : {props.quote && <span>{props.quote.data.currency} {props.quote.data.price}</span>}
                     </h1>
                 </div>
-                <div className={'border p-5 col-span-7'}>
+                <div className={'border p-5 col-span-12 md:col-span-7'}>
                     <div className="grid grid-cols-12 gap-4">
                         <input type="number" onChange={onBuyChange} className={"border col-span-7"} value={props.buyQuantity} />
                         <span className={'bg-blue-600 cursor-pointer col-span-5 py-2 rounded text-white text-xl text-center'} onClick={buyStock}>Buy</span>

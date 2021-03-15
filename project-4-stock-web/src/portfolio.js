@@ -208,15 +208,15 @@ function Portfolio(props) {
             {!props.currentPortfolio && <h1 className={'text-lg font-bold'}>Loading...</h1>}
             {selectedStock ? <div className={"p-4 grid grid-cols-12 gap-4"}>
                 {currentStock.map((item, index) => {
-                return <div key={index} className={"col-start-3 col-span-12"}>{item.symbol}: you have {item.quantity} at {item.price} per share.</div>
+                return <div key={index} className={"col-span-12"}>{item.symbol}: you have {item.quantity} at {item.price} per share.</div>
                 })}
-                <input type="number" onClick={fetchQuote} onChange={onQuantityChange} className={"border col-start-5 col-span-6"} value={newQuantity} />
-                <span onClick={purchaseStock} className={'bg-blue-600 cursor-pointer col-start-3 col-span-5 py-2 rounded text-white text-xl text-center'}>Buy</span>
-                <span onClick={sellStock} className={'bg-red-600 cursor-pointer col-start-8 col-span-5 py-2 rounded text-white text-xl text-center'}>Sell</span>
+                <input type="number" onClick={fetchQuote} onChange={onQuantityChange} className={"border col-span-12"} value={newQuantity} />
+                <span onClick={purchaseStock} className={'bg-blue-600 cursor-pointer col-start-3 col-span-8 md:col-start-4 md:col-span-6 lg:col-start-5 lg:col-span-4 xl:col-start-4 xl:col-span-3 py-2 rounded text-white text-xl text-center'}>Buy</span>
+                <span onClick={sellStock} className={'bg-red-600 cursor-pointer col-start-3 col-span-8 py-2 md:col-start-4 md:col-span-6 lg:col-start-5 lg:col-span-4 xl:col-span-3 rounded text-white text-xl text-center'}>Sell</span>
             </div> : <div></div>}
                 
             <div className={"grid grid-cols-12 gap-4"}>
-                {props.currentCash && <h1 className={'text-xl font-bold col-start-3 col-span-12'}>
+                {props.currentCash && <h1 className={'md:text-xl font-bold col-span-12 text-center'}>
                     Current Cash Value: ${props.currentCash.value}
                 </h1>}
             </div>

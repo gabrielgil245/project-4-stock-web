@@ -134,17 +134,17 @@ function App() {
     
     return (
     <>
-      <div className={'grid grid-cols-12 gap-4 p-5 bg-blue-500'}>
-        <h1 className={'text-4xl col-span-8 font-bold text-center text-white tracking-wider uppercase'}>
+      <div className={'grid grid-cols-12 gap-4 p-5 bg-blue-500 py-4'}>
+        <h1 className={'text-xl md:text-4xl col-span-8 md:col-span-8 font-bold text-center mt-4 md:mt-2 text-white tracking-wider uppercase'}>
           Paper Trader
         </h1>
-        <span onClick={resetCash} className={'bg-gray-500 cursor-pointer col-span-2 py-2 rounded text-white text-xl text-center'}>
+        <span onClick={resetCash} className={'bg-gray-500 cursor-pointer col-span-4 md:col-span-2 mt-2 py-2 rounded text-white text-xl text-center'}>
           Reset
         </span>
       </div>
 
       <div className="grid grid-cols-12">
-        <div className="col-span-6">
+        <div className="col-span-12 md:col-span-6">
           <Search currentCash={currentCash}
             setCurrentCash={setCurrentCash}
             fetchCash={fetchCash}
@@ -155,7 +155,7 @@ function App() {
             setBuyQuantity={setBuyQuantity}
             refreshCash={refreshCash}/>
         </div>
-        <div className="col-span-6">
+        <div className="col-span-12 md:col-span-6">
           <Portfolio currentCash={currentCash}
             setCurrentCash={setCurrentCash}
             currentPortfolio={currentPortfolio}
