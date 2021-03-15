@@ -10,6 +10,47 @@ function App() {
   const [quote, setQuote] = useState();
   const [buyQuantity, setBuyQuantity] = useState(0);
   
+  const resetCash = async () => {
+    let cashId = 1;  
+    let cashBody = {
+      value: 100000
+    }
+
+    let options = {
+    method: 'PUT', 
+    body: JSON.stringify(cashBody),
+    headers: {}
+    };
+    options.headers["Accept"] = "application/json, text/plain, */*";
+    options.headers["Content-Type"] = "application/json;charset=utf-8";
+    // console.log(options);
+
+    const res = await fetch(`http://localhost:3000/api/v1/cash/${cashId}`, options);
+    
+    const resTwo = await fetch(`http://localhost:3000/api/v1/portfolio`);
+    let ids = await resTwo.json();
+    for (let item of ids) { 
+
+      let options = {
+        method: 'DELETE', 
+        headers: {}
+      };
+      options.headers["Accept"] = "application/json, text/plain, */*";
+      options.headers["Content-Type"] = "application/json;charset=utf-8";
+      // console.log(options);
+    
+      const resThree = await fetch(`http://localhost:3000/api/v1/portfolio/${item.id}`, options)
+    
+    }
+    const resFour = await fetch(`http://localhost:3000/api/v1/portfolio`);
+    let emptyTable = await resFour.json();
+    setCurrentPortfolio(emptyTable);
+    
+    const response = await fetch (`http://localhost:3000/api/v1/cash/`);
+    const newCash = await response.json();
+    setCurrentCash(newCash);
+  }
+  
   const fetchCash = async () => {
     const res = await fetch(`http://localhost:3000/api/v1/cash`);
     let cash = await res.json();
@@ -93,10 +134,13 @@ function App() {
     
     return (
     <>
-      <div className={'w-full p-5 bg-blue-500'}>
-        <h1 className={'text-2xl font-bold text-center text-white tracking-wider uppercase'}>
+      <div className={'grid grid-cols-12 gap-4 p-5 bg-blue-500'}>
+        <h1 className={'text-4xl col-span-8 font-bold text-center text-white tracking-wider uppercase'}>
           Paper Trader
         </h1>
+        <span onClick={resetCash} className={'bg-gray-500 cursor-pointer col-span-2 py-2 rounded text-white text-xl text-center'}>
+          Reset
+        </span>
       </div>
 
       <div className="grid grid-cols-12">

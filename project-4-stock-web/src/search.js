@@ -75,7 +75,7 @@ function Search(props) {
                     <input value={inputText} onChange={onInputChange} type="text" className={'border w-full rounded border-gray-300 p-2'}/>
                 </div>
                 <div className={'col-span-3 flex items-stretch'}>
-                    <span onClick={fetchQuote} className={'self-center align-center bg-gray-600 cursor-pointer rounded text-white text-xl p-2'}>Get Quote</span>
+                    <span onClick={fetchQuote} className={'self-center align-center bg-green-600 cursor-pointer rounded text-white text-xl p-2'}>Get Quote</span>
                 </div>
             </div>
 
