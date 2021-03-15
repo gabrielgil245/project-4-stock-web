@@ -3,9 +3,9 @@ import React, {useState, useEffect} from 'react';
 function Search(props) {
     
     const [inputText, setInputText] = useState('');
-    const [quote, setQuote] = useState();
+    // const [quote, setQuote] = useState();
     const [ticker, setTicker] = useState();
-    const [buyQuantity, setBuyQuantity] = useState(0);
+    // const [buyQuantity, setBuyQuantity] = useState(0);
 
     useEffect(() => {
         
@@ -14,8 +14,8 @@ function Search(props) {
     const fetchQuote = async () => {
         const res = await fetch(`http://localhost:3000/api/v1/portfolio/search/${inputText}`);
         let json = await res.json();
-        console.log(json);
-        setQuote(json);
+        // console.log(json);
+        props.setQuote(json);
         setTicker(inputText);
         setInputText('');
     };
@@ -27,19 +27,19 @@ function Search(props) {
 
     const buyStock = async () => {
         
-        if(buyQuantity <= 0){
+        if(props.buyQuantity <= 0){
             alert("Buy quantity must be greater than 0");
         }
 
-        let cashNeeded = buyQuantity * quote.data.price;
+        let cashNeeded = props.buyQuantity * props.quote.data.price;
         console.log('cashNeeded is', cashNeeded)
         if(cashNeeded > props.currentCash.value){
             alert("Not enough cash!");
         }else{
             let stockBody = {
                 symbol: ticker,
-                quantity:buyQuantity,
-                price: quote.data.price
+                quantity: props.buyQuantity,
+                price: props.quote.data.price
             }
 
             let options = {
@@ -53,8 +53,10 @@ function Search(props) {
 
             const res = await fetch(`http://localhost:3000/api/v1/portfolio`, options);
             let json = await res.json();
-            console.log(json);
-            setBuyQuantity(0);
+            // console.log(json);
+            props.setBuyQuantity(0);
+            props.refreshCash();
+            props.fetchCash();
             props.fetchPortfolio();
             alert("Success!");
         }
@@ -62,7 +64,7 @@ function Search(props) {
 
     const onBuyChange = async (event) => {
         // console.log(event.currentTarget.value);
-        setBuyQuantity(event.currentTarget.value);
+        props.setBuyQuantity(event.currentTarget.value);
     };
 
     return (
@@ -80,12 +82,12 @@ function Search(props) {
             {ticker && <div className="grid grid-cols-12">
                 <div className={'border p-5 col-span-5'}>
                     <h1 className={'text-lg'}>
-                        {ticker} : {quote && <span>{quote.data.currency} {quote.data.price}</span>}
+                        {ticker} : {props.quote && <span>{props.quote.data.currency} {props.quote.data.price}</span>}
                     </h1>
                 </div>
                 <div className={'border p-5 col-span-7'}>
                     <div className="grid grid-cols-12 gap-4">
-                        <input type="number" onChange={onBuyChange} className={"border col-span-7"} value={buyQuantity} />
+                        <input type="number" onChange={onBuyChange} className={"border col-span-7"} value={props.buyQuantity} />
                         <span className={'bg-blue-600 cursor-pointer col-span-5 py-2 rounded text-white text-xl text-center'} onClick={buyStock}>Buy</span>
                     </div>                 
                 </div>
